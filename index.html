@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nguyễn Khánh Linh — Portfolio</title>
+  <meta name="description" content="E-Portfolio của Nguyễn Khánh Linh — Sinh viên ngành Marketing và Truyền thông, Trường Quản trị và Kinh doanh (HSB), ĐHQGHN. Tổng hợp 7 bài tập và kỹ năng số."/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Minimal Tech-Creative Light Colors */
+      --bg-dark: #F8FAFC;          /* Clean slate gray-white */
+      --bg-surface: #FFFFFF;       /* Pure white card surfaces */
+      --bg-surface-hover: #F1F5F9; /* Very soft hover gray */
+      --border-color: rgba(15, 23, 42, 0.08); /* Cool gray borders */
+      --border-color-hover: rgba(79, 70, 229, 0.3); /* Soft indigo highlight border */
+      --text-main: #0F172A;        /* Slate 900 */
+      --text-muted: #475569;       /* Slate 600 */
+      
+      --accent-cyan: #2563EB;      /* Cobalt Blue (Primary highlight) */
+      --accent-magenta: #EC4899;   /* Cyber Pink/Magenta (Secondary highlight) */
+      --accent-indigo: #4F46E5;    /* Indigo */
+      --accent-gold: #F59E0B;      /* Amber / Gold */
+      --accent-green: #10B981;     /* Emerald green */
+      
+      --gradient-cyan-indigo: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+      --gradient-magenta-orange: linear-gradient(135deg, #EC4899 0%, #F43F5E 100%);
+      --gradient-indigo-purple: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+      
+      /* Typography */
+      --font-display: 'Be Vietnam Pro', sans-serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Mappings for legacy compatibility with inline styles and selectors */
+      --deep: var(--text-main);
+      --blush: var(--accent-cyan);
+      --light-mid: var(--text-muted);
+      --font-serif: var(--font-display);
+      --rose: var(--accent-indigo);
+      --terracotta: var(--accent-magenta);
+      --cream: var(--bg-dark);
+      --warm-white: var(--bg-surface);
+      --mid: var(--text-muted);
+      --gold: var(--accent-gold);
+      --ink: #0B0F19;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-indigo);
+      position: fixed; pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.3s, height 0.3s, background 0.3s;
+      box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--accent-magenta);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease-out, width 0.3s, height 0.3s, opacity 0.3s, border-color 0.3s;
+      opacity: 0.6;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.1);
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1000;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+      opacity: 0.25;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 900;
+      padding: 24px 50px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(248, 250, 252, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      transition: padding 0.4s, background 0.4s;
+    }
+    .nav.scrolled {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 16px 50px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      text-decoration: none;
+      background: var(--gradient-cyan-indigo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      cursor: none;
+    }
+    .nav-links a:hover {
+      color: var(--accent-cyan);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      background: #F1F5F9;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 80px 60px;
+      position: relative;
+      overflow: hidden;
+      border-right: 1px solid var(--border-color);
+    }
+    .hero-left::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, rgba(79, 70, 229, 0.08) 0%, transparent 65%);
+    }
+    .hero-left .bg-text {
+      position: absolute;
+      top: -10px; left: -10px;
+      font-family: var(--font-display);
+      font-size: clamp(120px, 16vw, 240px);
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.015);
+      line-height: 0.8;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      border: 1px solid var(--border-color-hover);
+      color: var(--accent-indigo);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      margin-bottom: 28px;
+      width: fit-content;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+      background: rgba(79, 70, 229, 0.05);
+    }
+    .hero-avatar {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: var(--gradient-indigo-purple);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.35s forwards;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+    }
+    .hero-avatar span {
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 800;
+      color: white;
+    }
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.1;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.5s forwards;
+    }
+    .hero-name em {
+      font-style: normal;
+      background: var(--gradient-cyan-indigo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-id {
+      margin-top: 18px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+    .hero-right {
+      background: var(--bg-surface);
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 80px 60px;
+      position: relative;
+    }
+    .hero-right::after {
+      content: '';
+      position: absolute;
+      bottom: 0; right: 0;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-major {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s forwards;
+    }
+    .hero-school {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent-magenta);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+    .hero-desc {
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-muted);
+      max-width: 440px;
+      border-left: 2px solid var(--accent-indigo);
+      padding-left: 18px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.8s forwards;
+    }
+    .hero-email {
+      margin-top: 30px;
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      opacity: 0;
+      animation: fadeUp 0.9s 1.0s forwards;
+    }
+    .hero-email span {
+      color: var(--accent-indigo);
+      font-weight: 500;
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px; left: 60px;
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(15, 23, 42, 0.25);
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 40px; height: 1px;
+      background: rgba(15, 23, 42, 0.15);
+      display: block;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    section { position: relative; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent-magenta);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.15;
+    }
+    .section-title em {
+      font-style: normal;
+      background: var(--gradient-cyan-indigo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .divider {
+      width: 60px; height: 2px;
+      background: var(--gradient-cyan-indigo);
+      margin: 20px 0;
+    }
+
+    /* ─── ABOUT ─── */
+    .about {
+      padding: 120px 80px;
+      background: var(--bg-surface);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-cards-wrapper {
+      position: relative;
+      height: 400px;
+      margin-bottom: 30px;
+    }
+    .about-card {
+      position: absolute;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .about-card-main {
+      width: 280px; height: 360px;
+      top: 0; left: 30px;
+      background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    }
+    .about-card-main .initials {
+      font-family: var(--font-display);
+      font-size: 80px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.03);
+      line-height: 1;
+      position: absolute;
+      top: 16px; right: 20px;
+    }
+    .about-card-main p {
+      color: #F8FAFC;
+      font-size: 13px;
+      line-height: 1.8;
+      position: relative; z-index: 1;
+    }
+    .about-card-accent {
+      width: 180px; height: 180px;
+      bottom: 0; right: 10px;
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+    }
+    .about-card-accent svg {
+      width: 48px; height: 48px;
+      stroke: var(--accent-magenta);
+      filter: drop-shadow(0 0 5px rgba(236, 72, 153, 0.1));
+    }
+    .about-card-gold {
+      width: 100px; height: 80px;
+      top: 60px; right: 10px;
+      background: var(--gradient-magenta-orange);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.2);
+    }
+    .about-card-gold span {
+      font-family: var(--font-display);
+      font-size: 32px;
+      color: white;
+      font-weight: 800;
+    }
+    .about-text .section-label { margin-bottom: 8px; }
+    .about-body {
+      margin-top: 24px;
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-muted);
+    }
+    .about-body p + p { margin-top: 16px; }
+
+    /* ─── SKILLS ─── */
+    .skills {
+      padding: 120px 80px;
+      background: var(--bg-dark);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .skills::before {
+      content: 'SKILLS';
+      position: absolute;
+      left: -20px; bottom: -30px;
+      font-family: var(--font-display);
+      font-size: clamp(100px, 14vw, 180px);
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.005);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-top: 50px;
+    }
+    .skill-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 30px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s;
+      cursor: none;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
+    }
+    .skill-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.06);
+    }
+    .skill-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gradient-cyan-indigo);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .skill-card:hover::after { transform: scaleX(1); }
+    .skill-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .skill-card h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .skill-card p {
+      font-size: 12.5px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+    .skill-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: rgba(79, 70, 229, 0.05);
+      color: var(--accent-indigo);
+      border: 1px solid rgba(79, 70, 229, 0.15);
+      padding: 3px 8px;
+      border-radius: 2px;
+      margin-top: 12px;
+      margin-right: 4px;
+    }
+
+    /* ─── DOCUMENTS ─── */
+    .documents {
+      padding: 120px 80px;
+      background: var(--bg-surface);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .documents::before {
+      content: 'PROJECTS';
+      position: absolute;
+      right: -20px; bottom: -30px;
+      font-family: var(--font-display);
+      font-size: clamp(100px, 14vw, 180px);
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.008);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+    }
+    .documents .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 60px;
+    }
+    .documents .section-header-right {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      max-width: 300px;
+      text-align: right;
+      line-height: 1.7;
+    }
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .doc-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 36px 30px 30px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s, transform 0.4s, box-shadow 0.4s;
+      cursor: none;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .doc-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
+    }
+    .doc-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.03) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .doc-card:hover::before { opacity: 1; }
+    .doc-card-num {
+      font-family: var(--font-display);
+      font-size: 60px;
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.02);
+      position: absolute;
+      top: 8px; right: 20px;
+      line-height: 1;
+    }
+    .doc-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      color: var(--accent-indigo);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid var(--border-color);
+    }
+    .doc-card-badge .badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent-magenta);
+      flex-shrink: 0;
+    }
+    .doc-card-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+      line-height: 1.3;
+    }
+    .doc-card-desc {
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 20px;
+    }
+    .doc-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .doc-card-tags span {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 2px;
+    }
+    .doc-card-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+    }
+    .doc-card-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-indigo);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: gap 0.3s;
+    }
+    .doc-card:hover .doc-card-link { gap: 10px; }
+    .doc-card-link .arrow {
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+    .doc-card:hover .doc-card-link .arrow { transform: translateX(3px); }
+
+    .doc-card-featured {
+      grid-column: span 3;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .doc-card-featured .featured-left {
+      background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border-color);
+    }
+    .doc-card-featured .featured-left .doc-card-badge {
+      background: var(--bg-surface);
+      color: var(--accent-indigo);
+      border: 1px solid var(--border-color);
+    }
+    .doc-card-featured .featured-left .doc-card-title {
+      font-size: 26px;
+      color: var(--text-main);
+    }
+    .doc-card-featured .featured-left .doc-card-desc {
+      color: var(--text-muted);
+    }
+    .doc-card-featured .featured-left .doc-card-footer {
+      border-top-color: var(--border-color);
+    }
+    .doc-card-featured .featured-left .doc-card-link {
+      color: var(--accent-indigo);
+    }
+    .doc-card-featured .featured-right {
+      background: var(--bg-surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      border-left: 1px solid var(--border-color);
+    }
+    .featured-stat { text-align: center; }
+    .featured-stat .num {
+      font-family: var(--font-display);
+      font-size: 72px;
+      font-weight: 800;
+      color: var(--accent-indigo);
+      line-height: 1;
+      text-shadow: 0 0 10px rgba(79, 70, 229, 0.05);
+    }
+    .featured-stat .label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+    .featured-stats-row {
+      display: flex;
+      gap: 40px;
+      margin-top: 30px;
+    }
+    .featured-mini-stat {
+      text-align: center;
+    }
+    .featured-mini-stat .num {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent-magenta);
+      line-height: 1;
+    }
+    .featured-mini-stat .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── SUMMARY ─── */
+    .summary {
+      padding: 120px 80px;
+      background: var(--bg-dark);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .summary::before {
+      content: '回顧';
+      position: absolute;
+      right: -10px; bottom: -20px;
+      font-family: var(--font-display);
+      font-size: clamp(100px, 14vw, 180px);
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.005);
+      pointer-events: none;
+      user-select: none;
+    }
+    .summary-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      margin-top: 50px;
+      align-items: start;
+    }
+    .summary-reflection {
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--text-muted);
+    }
+    .summary-reflection p + p { margin-top: 16px; }
+    .summary-reflection blockquote {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-style: italic;
+      color: var(--accent-indigo);
+      line-height: 1.6;
+      padding: 24px 0;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      margin: 28px 0;
+    }
+    .summary-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .summary-card {
+      padding: 28px 24px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: none;
+    }
+    .summary-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateX(6px);
+    }
+    .summary-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .summary-card-icon {
+      font-size: 20px;
+    }
+    .summary-card h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .summary-card p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    /* ─── CONTACT ─── */
+    .contact {
+      padding: 120px 80px;
+      background: var(--bg-surface);
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 80px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .contact-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      justify-content: center;
+    }
+    .contact-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .contact-item:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-2px);
+    }
+    .contact-item .icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(79, 70, 229, 0.05);
+      border: 1px solid rgba(79, 70, 229, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--accent-indigo);
+      flex-shrink: 0;
+    }
+    .contact-item h4 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .contact-item p {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #0F172A;
+      padding: 40px 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    footer span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.15em;
+    }
+    .footer-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .nav { padding: 14px 24px; }
+      .nav.scrolled { padding: 12px 24px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 100px 24px 60px; min-height: 50vh; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .hero-right { padding: 60px 24px; min-height: 50vh; }
+      .about { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      .about-visual { height: auto; }
+      .about-cards-wrapper { height: 340px; margin-bottom: 20px; }
+      .about-card-main { width: 220px; height: 300px; }
+      .about-card-accent { width: 140px; height: 140px; }
+      .about-card-gold { width: 80px; height: 70px; }
+      .skills { padding: 80px 24px; }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .documents { padding: 80px 24px; }
+      .documents .section-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 40px; }
+      .documents .section-header-right { text-align: left; }
+      .docs-grid { grid-template-columns: 1fr; gap: 20px; }
+      .doc-card-featured { grid-column: span 1; grid-template-columns: 1fr; }
+      .doc-card-featured .featured-left { border-right: none; border-bottom: 1px solid var(--border-color); }
+      .summary { padding: 80px 24px; }
+      .summary-content { grid-template-columns: 1fr; gap: 40px; }
+      .contact { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      footer { flex-direction: column; gap: 10px; padding: 30px 24px; text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+
+
+
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ─── NAV ─── -->
+  <nav class="nav" id="nav">
+    <div class="nav-logo">KL.</div>
+    <ul class="nav-links">
+      <li><a href="#about">Về tôi</a></li>
+      <li><a href="#skills">Kỹ năng</a></li>
+      <li><a href="#projects">Bài tập</a></li>
+      <li><a href="#contact">Liên hệ</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="bg-text">LINH</div>
+      <div class="hero-tag">Portfolio · 2026</div>
+      <div class="hero-avatar">
+        <span>KL</span>
+      </div>
+      <h1 class="hero-name">
+        Nguyễn Khánh<br/><em>Linh</em>
+      </h1>
+      <p class="hero-id">25080098</p>
+      <div class="scroll-hint">Scroll để khám phá</div>
+    </div>
+    <div class="hero-right">
+      <p class="section-label" style="opacity:0;animation:fadeUp 0.8s 0.4s forwards">Ngành học</p>
+      <h2 class="hero-major">Marketing &amp;<br/>Truyền thông</h2>
+      <p class="hero-school">Trường Quản trị và Kinh doanh (HSB) — ĐHQGHN</p>
+      <p class="hero-desc">
+        Chào mừng thầy cô đến với E-Portfolio của tôi. Trang web này tổng hợp toàn bộ <strong>7 nhiệm vụ học tập</strong> trong khóa học, minh chứng cho hành trình phát triển kỹ năng số — từ quản lý dữ liệu, nghiên cứu học thuật đến ứng dụng Trí tuệ nhân tạo (AI) trong sáng tạo nội dung và phân tích truyền thông.
+      </p>
+      <div class="hero-email">
+        <span>✉</span>
+        u25080098@hsb.edu.vn
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT ─── -->
+  <section class="about" id="about">
+    <div class="about-text">
+      <p class="section-label reveal">Về tôi</p>
+      <h2 class="section-title reveal">Xin chào,<br/>tôi là <em>Khánh Linh</em></h2>
+      <div class="divider reveal"></div>
+      <div class="about-body reveal">
+        <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin-top: 24px; margin-bottom: 8px;">Giới thiệu bản thân</h3>
+        <p>Xin chào, tôi là Nguyễn Khánh Linh, sinh viên ngành Marketing và Truyền thông. Tôi là người yêu thích sáng tạo nội dung, truyền thông số và luôn hứng thú với việc tìm hiểu hành vi khách hàng cũng như các xu hướng marketing mới. Ngoài ra, tôi có kinh nghiệm tham gia các hoạt động tổ chức sự kiện tại trường, giúp tôi rèn luyện kỹ năng làm việc nhóm, giao tiếp và xử lý tình huống linh hoạt.</p>
+
+        <div style="background: var(--bg-dark); border: 1px solid var(--border-color); padding: 24px; border-radius: 6px; margin-top: 28px;">
+          <h4 style="font-family: var(--font-display); font-size: 16px; color: var(--accent-indigo); margin-bottom: 12px; font-weight: 700;">Thông tin ngắn gọn</h4>
+          <ul style="list-style: none; padding-left: 0;">
+            <li style="font-size: 13.5px; line-height: 1.8; color: var(--text-muted); margin-bottom: 8px; padding-left: 14px; position: relative;">
+              <span style="color: var(--accent-magenta); position: absolute; left: 0; font-weight: bold;">•</span>
+              <strong>Họ và tên:</strong> Nguyễn Khánh Linh
+            </li>
+            <li style="font-size: 13.5px; line-height: 1.8; color: var(--text-muted); margin-bottom: 8px; padding-left: 14px; position: relative;">
+              <span style="color: var(--accent-magenta); position: absolute; left: 0; font-weight: bold;">•</span>
+              <strong>Ngành học:</strong> Marketing và Truyền thông
+            </li>
+            <li style="font-size: 13.5px; line-height: 1.8; color: var(--text-muted); margin-bottom: 8px; padding-left: 14px; position: relative;">
+              <span style="color: var(--accent-magenta); position: absolute; left: 0; font-weight: bold;">•</span>
+              <strong>Định hướng nghề nghiệp:</strong> Content Creator / Content Marketing
+            </li>
+            <li style="font-size: 13.5px; line-height: 1.8; color: var(--text-muted); margin-bottom: 8px; padding-left: 14px; position: relative;">
+              <span style="color: var(--accent-magenta); position: absolute; left: 0; font-weight: bold;">•</span>
+              <strong>Sở thích:</strong> Viết nội dung, tham gia sự kiện, tìm hiểu xu hướng truyền thông, xem phim và đọc sách về Marketing.
+            </li>
+            <li style="font-size: 13.5px; line-height: 1.8; color: var(--text-muted); margin-bottom: 8px; padding-left: 14px; position: relative;">
+              <span style="color: var(--accent-magenta); position: absolute; left: 0; font-weight: bold;">•</span>
+              <strong>Điểm mạnh:</strong> Sáng tạo nội dung, giao tiếp tốt, làm việc nhóm hiệu quả, thích nghi nhanh với môi trường mới.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="about-visual reveal">
+      <div class="about-cards-wrapper">
+        <div class="about-card about-card-main">
+          <div class="initials">KL</div>
+          <p>Sinh viên ngành Marketing và Truyền thông —<br/>Trường Quản trị và Kinh doanh (HSB), ĐHQGHN</p>
+        </div>
+        <div class="about-card about-card-gold">
+          <span>7</span>
+        </div>
+        <div class="about-card about-card-accent">
+          <svg fill="none" stroke-width="1.2" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20"/>
+            <path d="M24 14 v10 l6 4"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="about-body">
+        <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin-top: 24px; margin-bottom: 8px;">Mục tiêu học tập và định hướng phát triển</h3>
+        <p style="font-size: 14px; line-height: 1.9; color: var(--text-muted);">Trong quá trình học tập, tôi luôn nỗ lực trau dồi kiến thức chuyên môn về Marketing, Truyền thông và phát triển các kỹ năng thực hành như sáng tạo nội dung, xây dựng chiến lược truyền thông và quản lý mạng xã hội. Mục tiêu của tôi là trở thành một Content Creator/Content Marketing chuyên nghiệp, có khả năng tạo ra những nội dung giá trị, sáng tạo và mang lại hiệu quả cho doanh nghiệp. Tôi cũng mong muốn tích lũy thêm nhiều kinh nghiệm thực tế thông qua các dự án và chương trình thực tập trong lĩnh vực Marketing.</p>
+
+        <h3 style="font-family: var(--font-display); font-size: 20px; color: var(--text-main); margin-top: 28px; margin-bottom: 8px;">Mục tiêu của Portfolio</h3>
+        <p style="font-size: 14px; line-height: 1.9; color: var(--text-muted);">Portfolio này được xây dựng nhằm:</p>
+        <ul style="margin: 10px 0 20px 20px; list-style-type: disc;">
+          <li style="font-size: 14px; line-height: 1.8; color: var(--text-muted); margin-bottom: 6px;">Tổng hợp và lưu trữ các sản phẩm, dự án và hoạt động cá nhân đã thực hiện.</li>
+          <li style="font-size: 14px; line-height: 1.8; color: var(--text-muted); margin-bottom: 6px;">Thể hiện những kiến thức, kỹ năng và kinh nghiệm đã tích lũy trong quá trình học tập.</li>
+          <li style="font-size: 14px; line-height: 1.8; color: var(--text-muted); margin-bottom: 6px;">Giới thiệu năng lực cá nhân với nhà tuyển dụng và đối tác.</li>
+          <li style="font-size: 14px; line-height: 1.8; color: var(--text-muted); margin-bottom: 6px;">Đánh dấu quá trình phát triển bản thân, đồng thời làm nền tảng cho các cơ hội thực tập và nghề nghiệp trong tương lai.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SKILLS ─── -->
+  <section class="skills" id="skills">
+    <p class="section-label reveal">Năng lực</p>
+    <h2 class="section-title reveal">Kỹ năng<br/><em>đã phát triển</em></h2>
+    <div class="divider reveal"></div>
+    <div class="skills-grid">
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">📂</span>
+        <h3>Quản lý dữ liệu số</h3>
+        <p>Tổ chức tệp tin, thư mục khoa học trên Windows, tối ưu hóa quy trình làm việc cá nhân.</p>
+        <span class="skill-tag">File Explorer</span>
+        <span class="skill-tag">Windows</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">🔍</span>
+        <h3>Nghiên cứu học thuật</h3>
+        <p>Tra cứu, đánh giá tài liệu khoa học từ các nguồn uy tín bằng toán tử tìm kiếm nâng cao.</p>
+        <span class="skill-tag">Google Scholar</span>
+        <span class="skill-tag">SpringerLink</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">💬</span>
+        <h3>Prompt Engineering</h3>
+        <p>Thiết kế prompt hiệu quả cho các mô hình ngôn ngữ lớn, tối ưu chất lượng kết quả AI.</p>
+        <span class="skill-tag">ChatGPT</span>
+        <span class="skill-tag">LLMs</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">🤝</span>
+        <h3>Hợp tác trực tuyến</h3>
+        <p>Phối hợp nhóm qua các nền tảng số, quản lý dự án và chia sẻ tài liệu hiệu quả.</p>
+        <span class="skill-tag">Trello</span>
+        <span class="skill-tag">Google Docs</span>
+        <span class="skill-tag">Discord</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">🎨</span>
+        <h3>Sáng tạo nội dung số</h3>
+        <p>Kết hợp AI tạo sinh để thiết kế infographic, hình ảnh minh họa và nội dung marketing.</p>
+        <span class="skill-tag">DALL-E</span>
+        <span class="skill-tag">Canva AI</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">⚖️</span>
+        <h3>Đạo đức AI</h3>
+        <p>Hiểu và tuân thủ nguyên tắc sử dụng AI có trách nhiệm, liêm chính học thuật.</p>
+        <span class="skill-tag">Academic Integrity</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">📊</span>
+        <h3>Phân tích truyền thông</h3>
+        <p>Sử dụng AI phân tích diễn ngôn, sắc thái tình cảm trong văn bản báo chí.</p>
+        <span class="skill-tag">Sentiment Analysis</span>
+      </div>
+
+      <div class="skill-card reveal">
+        <span class="skill-icon">🌐</span>
+        <h3>Phát triển Web</h3>
+        <p>Xây dựng website portfolio cá nhân, deploy trên GitHub Pages.</p>
+        <span class="skill-tag">HTML/CSS</span>
+        <span class="skill-tag">GitHub Pages</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── DOCUMENTS / PROJECTS ─── -->
+  <section class="documents" id="projects">
+    <div class="section-header">
+      <div>
+        <p class="section-label reveal">Dự án</p>
+        <h2 class="section-title reveal">Bài tập &amp;<br/><em>Nhiệm vụ</em> học tập</h2>
+      </div>
+      <p class="section-header-right reveal">Tổng hợp 7 bài tập được trình bày dưới dạng website chuyên nghiệp</p>
+    </div>
+
+    <div class="docs-grid">
+
+      <!-- Project 1 -->
+      <a href="bai-tap-1.html" class="doc-card reveal">
+        <div class="doc-card-num">01</div>
+        <div class="doc-card-badge"><span class="badge-dot"></span>Bài 1</div>
+        <h3 class="doc-card-title">Quản Lý Tệp &amp; Thư Mục</h3>
+        <p class="doc-card-desc">Thực hành File Explorer: tạo, đổi tên, sao chép, di chuyển, xóa và khôi phục tệp tin trên Windows.</p>
+        <div class="doc-card-tags">
+          <span>Windows</span>
+          <span>File Explorer</span>
+        </div>
+        <div class="doc-card-footer">
+          <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <!-- Project 2 -->
+      <a href="bai-tap-2.html" class="doc-card reveal">
+        <div class="doc-card-num">02</div>
+        <div class="doc-card-badge"><span class="badge-dot"></span>Bài 2</div>
+        <h3 class="doc-card-title">Tìm Kiếm &amp; Đánh Giá Thông Tin</h3>
+        <p class="doc-card-desc">Sử dụng Google Scholar, SpringerLink, ScienceDirect để tra cứu tài liệu về AI phát hiện gian lận tài chính.</p>
+        <div class="doc-card-tags">
+          <span>Google Scholar</span>
+          <span>ScienceDirect</span>
+        </div>
+        <div class="doc-card-footer">
+          <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <!-- Project 3 -->
+      <a href="bai-tap-3.html" class="doc-card reveal">
+        <div class="doc-card-num">03</div>
+        <div class="doc-card-badge"><span class="badge-dot"></span>Bài 3</div>
+        <h3 class="doc-card-title">Phát Triển Kỹ Năng Viết Prompt</h3>
+        <p class="doc-card-desc">Thực hành Prompt Engineering chuyên sâu: tóm tắt tài liệu, giải thích Machine Learning qua 3 cấp độ prompt.</p>
+        <div class="doc-card-tags">
+          <span>Prompt Engineering</span>
+          <span>ChatGPT</span>
+        </div>
+        <div class="doc-card-footer">
+          <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <!-- Project 4 -->
+      <a href="bai-tap-4.html" class="doc-card reveal">
+        <div class="doc-card-num">04</div>
+        <div class="doc-card-badge"><span class="badge-dot"></span>Bài 4</div>
+        <h3 class="doc-card-title">Hợp Tác Trực Tuyến</h3>
+        <p class="doc-card-desc">Sử dụng Trello, Google Docs, Google Drive và Discord để quản lý dự án nhóm về AI trong Tài chính.</p>
+        <div class="doc-card-tags">
+          <span>Trello</span>
+          <span>Google Docs</span>
+          <span>Discord</span>
+        </div>
+        <div class="doc-card-footer">
+          <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <!-- Project 5 -->
+      <a href="bai-tap-5.html" class="doc-card reveal">
+        <div class="doc-card-num">05</div>
+        <div class="doc-card-badge"><span class="badge-dot"></span>Bài 5</div>
+        <h3 class="doc-card-title">Sáng Tạo Nội Dung Số</h3>
+        <p class="doc-card-desc">Kết hợp ChatGPT, DALL-E và Canva AI để thiết kế Infographic chuyên nghiệp về AI trong Tài chính.</p>
+        <div class="doc-card-tags">
+          <span>ChatGPT</span>
+          <span>DALL-E</span>
+          <span>Canva AI</span>
+        </div>
+        <div class="doc-card-footer">
+          <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <!-- Project 6 -->
+      <a href="bai-tap-6.html" class="doc-card reveal">
+        <div class="doc-card-num">06</div>
+        <div class="doc-card-badge"><span class="badge-dot"></span>Bài 6</div>
+        <h3 class="doc-card-title">AI Có Trách Nhiệm</h3>
+        <p class="doc-card-desc">Phân tích chính sách sử dụng AI của ĐHQGHN, xây dựng nguyên tắc cá nhân khi sử dụng AI trong học tập.</p>
+        <div class="doc-card-tags">
+          <span>Đạo đức AI</span>
+          <span>Liêm chính</span>
+        </div>
+        <div class="doc-card-footer">
+          <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+        </div>
+      </a>
+
+      <!-- Featured Project (Project 7) -->
+      <a href="bai-tap-7.html" class="doc-card doc-card-featured reveal">
+        <div class="featured-left">
+          <div class="doc-card-badge"><span class="badge-dot"></span>Bài 7 · Bài tập nổi bật</div>
+          <h3 class="doc-card-title">Phân Tích Diễn Ngôn &amp; Tình Cảm Bằng AI</h3>
+          <p class="doc-card-desc">Sử dụng AI phân tích bài báo về bão Yagi 2024 từ Báo Nhân Dân và VnExpress — nhận diện sắc thái truyền thông.</p>
+          <div class="doc-card-footer">
+            <span class="doc-card-link">Xem chi tiết <span class="arrow">→</span></span>
+          </div>
+        </div>
+        <div class="featured-right">
+          <div class="featured-stat">
+            <div class="num">2</div>
+            <div class="label">Nguồn báo chí</div>
+          </div>
+          <div class="featured-stats-row">
+            <div class="featured-mini-stat">
+              <div class="num">AI</div>
+              <div class="label">Sentiment</div>
+            </div>
+            <div class="featured-mini-stat">
+              <div class="num">1</div>
+              <div class="label">Bảng so sánh</div>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+
+
+  <!-- ─── CONTACT ─── -->
+  <section class="contact" id="contact">
+    <div class="contact-left">
+      <h2>Kết nối<br/>cùng <em>tôi</em></h2>
+    </div>
+    <div class="contact-right">
+      <div class="contact-item">
+        <div class="icon">✉</div>
+        u25080098@hsb.edu.vn
+      </div>
+      <div class="contact-item">
+        <div class="icon">📖</div>
+        <div>
+          <p style="font-weight: 500; margin-bottom: 4px;">Marketing và Truyền thông</p>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.65);">Lớp MAC 6A</p>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="icon">🎓</div>
+        <div>
+          <p style="font-weight: 500; margin-bottom: 4px;">Trường Quản trị và Kinh doanh (HSB)</p>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.65);">ĐẠI HỌC QUỐC GIA HÀ NỘI</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <span>© 2026 — All rights reserved</span>
+    <span class="footer-name">Nguyễn Khánh Linh</span>
+    <span>HSB · ĐHQGHN</span>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .doc-card, .summary-card, .skill-card, .nav-links a').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        ring.style.width = '56px';
+        ring.style.height = '56px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px';
+        cursor.style.height = '12px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
+    });
+
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 80) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, (entry.target.dataset.delay || 0));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.dataset.delay = (i % 4) * 100;
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>

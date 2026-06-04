@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bài tập 7 — Phân Tích Diễn Ngôn Và Tình Cảm Bằng AI | Nguyễn Khánh Linh</title>
+  <meta name="description" content="Báo cáo phân tích diễn ngôn và sắc thái tình cảm trong tin tức bằng công cụ AI về cơn bão Yagi 2024 — Nguyễn Khánh Linh"/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Minimal Tech-Creative Light Colors */
+      --bg-dark: #F8FAFC;          /* Clean slate gray-white */
+      --bg-surface: #FFFFFF;       /* Pure white card surfaces */
+      --bg-surface-hover: #F1F5F9; /* Very soft hover gray */
+      --border-color: rgba(15, 23, 42, 0.08); /* Cool gray borders */
+      --border-color-hover: rgba(79, 70, 229, 0.3); /* Soft indigo highlight border */
+      --text-main: #0F172A;        /* Slate 900 */
+      --text-muted: #475569;       /* Slate 600 */
+      
+      --accent-cyan: #2563EB;      /* Cobalt Blue (Primary highlight) */
+      --accent-magenta: #EC4899;   /* Cyber Pink/Magenta (Secondary highlight) */
+      --accent-indigo: #4F46E5;    /* Indigo */
+      --accent-gold: #F59E0B;      /* Amber / Gold */
+      --accent-green: #10B981;     /* Emerald green */
+      
+      --gradient-cyan-indigo: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+      --gradient-magenta-orange: linear-gradient(135deg, #EC4899 0%, #F43F5E 100%);
+      --gradient-indigo-purple: linear-gradient(135deg, #4F46E5 0%, #8B5CF6 100%);
+      
+      /* Typography */
+      --font-display: 'Be Vietnam Pro', sans-serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      /* Mappings for legacy compatibility with inline styles and selectors */
+      --deep: var(--text-main);
+      --blush: var(--accent-cyan);
+      --light-mid: var(--text-muted);
+      --font-serif: var(--font-display);
+      --rose: var(--accent-indigo);
+      --terracotta: var(--accent-magenta);
+      --cream: var(--bg-dark);
+      --warm-white: var(--bg-surface);
+      --mid: var(--text-muted);
+      --gold: var(--accent-gold);
+      --ink: #0B0F19;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent-indigo);
+      position: fixed; pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s, width 0.3s, height 0.3s, background 0.3s;
+      box-shadow: 0 0 10px rgba(79, 70, 229, 0.4);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--accent-magenta);
+      border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease-out, width 0.3s, height 0.3s, opacity 0.3s, border-color 0.3s;
+      opacity: 0.6;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.1);
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1000;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+      opacity: 0.25;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 900;
+      padding: 20px 50px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(248, 250, 252, 0.8);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      text-decoration: none;
+      background: var(--gradient-cyan-indigo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-back {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      cursor: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-back:hover { color: var(--accent-indigo); }
+    .nav-back .arrow { transition: transform 0.3s; }
+    .nav-back:hover .arrow { transform: translateX(-3px); }
+
+    /* ─── HERO BANNER ─── */
+    .hero-banner {
+      min-height: 50vh;
+      background: #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 140px 50px 80px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-size: clamp(200px, 30vw, 400px);
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.008);
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+      z-index: 0;
+    }
+    .hero-banner::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 80%, rgba(79, 70, 229, 0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border-color-hover);
+      color: var(--accent-indigo);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      margin-bottom: 28px;
+      background: rgba(79, 70, 229, 0.05);
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-badge .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent-magenta);
+      box-shadow: 0 0 5px var(--accent-magenta);
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4.5vw, 52px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: var(--gradient-cyan-indigo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-subtitle {
+      font-size: 14.5px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s forwards;
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 40px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.8s forwards;
+    }
+    .hero-meta-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hero-meta-item span {
+      display: block;
+      font-size: 20px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: var(--accent-indigo);
+      margin-bottom: 4px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ─── CONTENT WRAP & TYPOGRAPHY ─── */
+    .content-wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 24px 100px;
+    }
+    .content-section {
+      margin-bottom: 60px;
+    }
+    .content-section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent-magenta);
+      margin-bottom: 8px;
+    }
+    .content-section-title {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3.5vw, 36px);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .content-section-title em {
+      font-style: normal;
+      background: var(--gradient-cyan-indigo);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-divider {
+      width: 50px;
+      height: 2px;
+      background: var(--gradient-cyan-indigo);
+      margin: 16px 0 24px;
+    }
+    .content-body {
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--text-muted);
+    }
+    .content-body p {
+      margin-bottom: 16px;
+    }
+    .content-body strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    .content-blockquote {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-style: italic;
+      color: var(--accent-indigo);
+      line-height: 1.8;
+      padding: 28px 24px;
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--accent-indigo);
+      background: rgba(79, 70, 229, 0.03);
+      margin: 32px 0;
+      position: relative;
+      border-radius: 0 4px 4px 0;
+    }
+    .content-blockquote::before {
+      content: '';
+      position: absolute;
+      left: 20px; top: 10px;
+      font-size: 64px;
+      color: rgba(79, 70, 229, 0.05);
+      font-family: var(--font-display);
+      line-height: 1;
+    }
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 50px 0;
+    }
+    .section-break::before,
+    .section-break::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+    }
+    .section-break .ornament {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--accent-indigo);
+    }
+
+    /* ─── STEP CARD ─── */
+    .step-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 32px 30px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
+    }
+    .step-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--gradient-cyan-indigo);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .step-card:hover::before { opacity: 1; }
+    .step-number {
+      position: absolute;
+      top: 10px; right: 16px;
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.015);
+      line-height: 1;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--bg-dark);
+      color: var(--accent-indigo);
+      border: 1px solid var(--border-color);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+    .step-body {
+      font-size: 14.5px;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+    .step-body .code-inline {
+      background: rgba(79, 70, 229, 0.05);
+      color: var(--accent-indigo);
+      border: 1px solid rgba(79, 70, 229, 0.15);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .step-body .keyboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .step-body ul {
+      list-style: none;
+      margin: 10px 0;
+    }
+    .step-body ul li {
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+    .step-body ul li::before {
+      content: '●';
+      position: absolute;
+      left: 0;
+      color: var(--accent-magenta);
+      font-size: 8px;
+      top: 6px;
+    }
+    .step-result {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: rgba(236, 72, 153, 0.02);
+      border-left: 3px solid var(--accent-magenta);
+      border-radius: 0 4px 4px 0;
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .step-result strong {
+      color: var(--accent-magenta);
+      font-weight: 600;
+    }
+
+    /* ─── RESULT ITEMS ─── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .result-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      transition: border-color 0.3s, transform 0.2s;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+    }
+    .result-item:hover {
+      border-color: var(--border-color-hover);
+      transform: translateX(4px);
+    }
+    .result-icon {
+      width: 32px; height: 32px;
+      background: var(--bg-dark);
+      color: var(--accent-indigo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 14px;
+      flex-shrink: 0;
+      border: 1px solid var(--border-color);
+    }
+    .result-text {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ─── TABLES ─── */
+    .table-container {
+      overflow-x: auto;
+      margin: 24px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-surface);
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.015);
+    }
+    .ref-table, .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      background: var(--bg-surface);
+    }
+    .ref-table thead, .styled-table thead {
+      background: var(--bg-dark);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .ref-table thead th, .styled-table thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--accent-indigo);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .ref-table tbody tr, .styled-table tbody tr {
+      transition: background 0.2s;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .ref-table tbody tr:hover, .styled-table tbody tr:hover {
+      background: rgba(15, 23, 42, 0.01);
+    }
+    .ref-table tbody td, .styled-table tbody td {
+      padding: 14px 16px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      vertical-align: top;
+    }
+    .ref-table tbody td:first-child, .styled-table tbody td:first-child {
+      font-family: var(--font-mono);
+      font-weight: bold;
+      color: var(--accent-magenta);
+      text-align: center;
+      width: 40px;
+    }
+    .ref-table tbody td:nth-child(2), .styled-table tbody td:nth-child(2) {
+      font-weight: 500;
+      color: var(--text-main);
+      min-width: 200px;
+    }
+    .reliability-badge, .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .reliability-badge.very-high, .badge.high-plus, .badge.positive {
+      background: rgba(16, 185, 129, 0.08);
+      color: var(--accent-green);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .reliability-badge.high, .badge.high, .badge.neutral {
+      background: rgba(245, 158, 11, 0.08);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .badge.negative {
+      background: rgba(236, 72, 153, 0.08);
+      color: var(--accent-magenta);
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    /* ─── RESEARCH CARDS ─── */
+    .topic-card {
+      background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+      border: 1px solid var(--border-color);
+      padding: 40px 36px;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.02);
+    }
+    .topic-card::before {
+      content: 'AI';
+      position: absolute;
+      right: -10px; bottom: -20px;
+      font-family: var(--font-display);
+      font-size: 140px;
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.015);
+      pointer-events: none;
+      line-height: 1;
+    }
+    .topic-card-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-magenta);
+      margin-bottom: 12px;
+    }
+    .topic-card h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .topic-card p {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+    .source-category {
+      margin-bottom: 24px;
+    }
+    .source-category-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .source-category-title .num {
+      width: 28px; height: 28px;
+      background: var(--bg-surface);
+      color: var(--accent-indigo);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+    .source-list {
+      list-style: none;
+      padding-left: 38px;
+    }
+    .source-list li {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .source-list li::before {
+      content: '●';
+      position: absolute;
+      left: 0;
+      color: var(--accent-magenta);
+      font-size: 8px;
+      top: 6px;
+    }
+
+    /* ─── EVALUATION CARD ─── */
+    .eval-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 28px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+    }
+    .eval-card:hover {
+      border-color: var(--border-color-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+    .eval-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--gradient-cyan-indigo);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .eval-card:hover::before { opacity: 1; }
+    .eval-card-num {
+      position: absolute;
+      top: 8px; right: 16px;
+      font-family: var(--font-display);
+      font-size: 44px;
+      font-weight: 900;
+      color: rgba(15, 23, 42, 0.015);
+      line-height: 1;
+    }
+    .eval-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .eval-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      background: var(--bg-dark);
+      color: var(--accent-indigo);
+      border: 1px solid var(--border-color);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .eval-title {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+    .eval-details {
+      padding-left: 46px;
+    }
+    .eval-detail-list {
+      list-style: none;
+    }
+    .eval-detail-list li {
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+    .eval-detail-list li::before {
+      content: '●';
+      position: absolute;
+      left: 0;
+      color: var(--accent-magenta);
+      font-size: 7px;
+      top: 7px;
+    }
+    .eval-detail-list li strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+    .eval-rating {
+      margin-top: 10px;
+      padding: 8px 14px;
+      background: rgba(236, 72, 153, 0.02);
+      border-left: 3px solid var(--accent-magenta);
+      font-size: 13px;
+      color: var(--accent-magenta);
+      font-weight: 500;
+      border-radius: 0 4px 4px 0;
+    }
+    .ranking-group {
+      margin-bottom: 28px;
+    }
+    .ranking-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      margin-bottom: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .ranking-label.level-a {
+      background: var(--bg-surface);
+      color: var(--accent-indigo);
+      border: 1px solid var(--border-color);
+    }
+    .ranking-label.level-b {
+      background: rgba(245, 158, 11, 0.05);
+      color: var(--accent-gold);
+      border: 1px solid rgba(245, 158, 11, 0.15);
+    }
+    .ranking-list {
+      list-style: none;
+    }
+    .ranking-list li {
+      font-size: 14px;
+      line-height: 1.85;
+      color: var(--text-muted);
+      padding: 8px 0 8px 24px;
+      position: relative;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .ranking-list li:last-child {
+      border-bottom: none;
+    }
+    .ranking-list li .rank-num {
+      position: absolute;
+      left: 0;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      color: var(--accent-magenta);
+    }
+
+    /* ─── RULE & EVAL GRIDS ─── */
+    .rule-grid, .eval-grid, .compare-grid, .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 24px 0;
+    }
+    .rule-box, .eval-box, .compare-card, .info-card {
+      padding: 28px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.015);
+    }
+    .rule-box.allowed, .eval-box.pros {
+      border-left: 4px solid var(--accent-green);
+    }
+    .rule-box.forbidden, .eval-box.cons {
+      border-left: 4px solid var(--accent-magenta);
+    }
+    .rule-box h4, .eval-box h5, .compare-card h3, .info-card h3 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rule-box.allowed h4, .eval-box.pros h5 { color: var(--accent-green); }
+    .rule-box.forbidden h4, .eval-box.cons h5 { color: var(--accent-magenta); }
+    
+    .rule-box ul, .eval-box ul, .info-col ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .rule-box ul li, .eval-box ul li, .info-col ul li {
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      padding-left: 18px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .rule-box.allowed ul li::before, .eval-box.pros ul li::before, .info-col.do ul li::before {
+      content: '✓';
+      position: absolute; left: 0;
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+    .rule-box.forbidden ul li::before, .eval-box.cons ul li::before, .info-col.dont ul li::before {
+      content: '✗';
+      position: absolute; left: 0;
+      color: var(--accent-magenta);
+      font-weight: bold;
+    }
+    
+    /* ─── TOOL CARDS ─── */
+    .tool-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 36px 32px;
+      margin: 32px 0;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      border-radius: 6px;
+      box-shadow: 0 4px 15px rgba(15, 23, 42, 0.02);
+    }
+    .tool-card:hover {
+      border-color: var(--border-color-hover);
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+    }
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gradient-cyan-indigo);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .tool-card:hover::before { transform: scaleX(1); }
+    
+    .tool-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .tool-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+      border: 1px solid var(--border-color);
+    }
+    .tool-icon.chatgpt { background: rgba(16, 163, 127, 0.05); color: #10A37F; border-color: rgba(16, 163, 127, 0.15); }
+    .tool-icon.dalle { background: rgba(236, 72, 153, 0.05); color: #EC4899; border-color: rgba(236, 72, 153, 0.15); }
+    .tool-icon.canva { background: rgba(0, 196, 204, 0.05); color: #00C4CC; border-color: rgba(0, 196, 204, 0.15); }
+    
+    .tool-header h3 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .tool-header .tool-type {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+    
+    .prompt-box {
+      background: #0F172A;
+      color: #38BDF8;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.8;
+      font-style: italic;
+      padding: 20px 24px;
+      border-radius: 4px;
+      margin: 20px 0;
+      position: relative;
+      border: 1px solid #1E293B;
+    }
+    .prompt-box::before {
+      content: 'PROMPT';
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--accent-magenta);
+      font-style: normal;
+      background: #1E293B;
+      padding: 2px 8px;
+      border: 1px solid #334155;
+    }
+    
+    /* ─── PROMPTS STYLING ─── */
+    .prompt-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-cyan);
+      padding: 24px;
+      margin: 20px 0;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+    }
+    .prompt-card.basic { border-left-color: var(--text-muted); }
+    .prompt-card.improved { border-left-color: var(--accent-indigo); }
+    .prompt-card.advanced { border-left-color: var(--accent-magenta); }
+    
+    .prompt-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+    .prompt-card.basic .prompt-label { color: var(--text-muted); }
+    .prompt-card.improved .prompt-label { color: var(--accent-indigo); }
+    .prompt-card.advanced .prompt-label { color: var(--accent-magenta); }
+    
+    .prompt-text {
+      font-family: var(--font-mono);
+      font-size: 14.5px;
+      line-height: 1.8;
+      font-style: italic;
+      color: #38BDF8;
+      margin-bottom: 12px;
+      background: #0F172A;
+      padding: 14px 18px;
+      border-radius: 4px;
+      border: 1px solid #1E293B;
+    }
+    .prompt-feedback {
+      font-size: 13.5px;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+    .prompt-feedback strong {
+      color: var(--text-main);
+    }
+
+    /* ─── INFOGRAPHICS & TIMELINES ─── */
+    .info-card h3 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 24px;
+    }
+    .info-col h4 {
+      font-family: var(--font-display);
+      color: var(--accent-indigo);
+      font-size: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+    .info-col.do h4 { color: var(--accent-green); }
+    .info-col.dont h4 { color: var(--accent-magenta); }
+    
+    .compare-card.nhandan h3 { color: var(--accent-indigo); }
+    .compare-card.vnexpress h3 { color: var(--accent-magenta); }
+    .compare-card p {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+    .highlight-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-indigo);
+      padding: 24px 28px;
+      margin: 24px 0;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
+    }
+    .highlight-card h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--text-main);
+      margin: 0 0 8px 0;
+    }
+    .highlight-card ul {
+      margin: 8px 0 0 16px;
+    }
+    .timeline {
+      position: relative;
+      margin: 40px 0;
+      padding-left: 30px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent-indigo), rgba(79, 70, 229, 0.1));
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -30px; top: 4px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--bg-dark);
+      border: 3px solid var(--accent-magenta);
+      z-index: 1;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .timeline-item:hover .timeline-dot {
+      transform: scale(1.3);
+      background: var(--accent-magenta);
+    }
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      color: var(--accent-indigo);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .timeline-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      border-radius: 4px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+    }
+    .timeline-card:hover {
+      border-color: var(--border-color-hover);
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+    }
+    .timeline-card h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .rating-star {
+      color: var(--accent-gold);
+      font-size: 16px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #0F172A;
+      padding: 40px 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    footer span {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.3);
+      letter-spacing: 0.15em;
+    }
+    .footer-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .nav { padding: 14px 24px; }
+      .hero-banner { padding: 120px 24px 60px; min-height: 40vh; }
+      .hero-meta { flex-direction: column; gap: 16px; margin-top: 30px; }
+      .content-wrap { padding: 50px 16px 60px; }
+      .results-grid { grid-template-columns: 1fr; }
+      .rule-grid, .eval-grid, .compare-grid, .info-grid { grid-template-columns: 1fr; }
+      .tool-header { flex-direction: column; text-align: center; }
+      .step-body { padding-left: 0; }
+      .table-container { margin: 24px -16px; border-radius: 0; border-left: none; border-right: none; }
+      footer { flex-direction: column; gap: 10px; padding: 30px 24px; text-align: center; }
+    }
+    @media (max-width: 600px) {
+      .hero-title { font-size: 26px; }
+      .content-section-title { font-size: 22px; }
+      .step-card { padding: 24px 20px; }
+      .step-number { font-size: 36px; }
+    }
+  </style>
+
+
+
+
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ─── NAV ─── -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">KL.</a>
+    <a href="index.html" class="nav-back">
+      <span class="arrow">←</span> Quay lại Portfolio
+    </a>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="bg-number">07</div>
+    <div style="position:relative; z-index:1;">
+      <div class="hero-tag">Bài tập 07 · AI & Phân tích Truyền thông</div>
+      <h1>Phân Tích Diễn Ngôn<br/><em>Và Tình Cảm Bằng AI</em></h1>
+      <p class="hero-subtitle">Sử dụng mô hình AI phân tích sắc thái biểu cảm và định hướng truyền thông của hai tờ báo lớn về sự kiện bão Yagi 2024</p>
+    </div>
+  </section>
+
+  <!-- ─── CONTENT ─── -->
+  <div class="content">
+
+    <!-- Section I: Mục tiêu -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần I</div>
+      <h2>Mục tiêu <em>phân tích</em></h2>
+      <div class="divider"></div>
+      <p>Bài thực hành nhằm rèn luyện kỹ năng sử dụng công cụ trí tuệ nhân tạo (AI) để phân tích sắc thái tình cảm và các yếu tố diễn ngôn trong tin tức báo chí.</p>
+      <p>Bằng cách so sánh hai bài báo đưa tin về cùng một sự kiện lớn, sinh viên có thể phát hiện sự khác biệt trong cách lựa chọn góc nhìn tiếp cận và nghệ thuật định hướng dư luận của mỗi cơ quan truyền thông.</p>
+    </div>
+
+    <div class="decorative-divider"><span>✦</span></div>
+
+    <!-- Section II: Thiết lập sự kiện -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần II</div>
+      <h2>Thiết lập <em>nghiên cứu</em></h2>
+      <div class="divider"></div>
+      <ul>
+        <li><strong>Sự kiện được chọn:</strong> Cơn bão Yagi và những ảnh hưởng nặng nề tại Việt Nam năm 2024. Đây là thiên tai thu hút sự chú ý cực lớn của truyền thông quốc tế và trong nước do mức độ thiệt hại nghiêm trọng.</li>
+        <li><strong>Nguồn tin 1 (Báo Nhân Dân):</strong> Tập trung phản ánh công tác chỉ đạo phòng tránh bão, điều phối lực lượng cứu hộ và tinh thần vượt khó của chính quyền cùng nhân dân.</li>
+        <li><strong>Nguồn tin 2 (VnExpress):</strong> Tập trung phản ánh trực quan thiệt hại thực tế của người dân, hạ tầng bị tàn phá và những câu chuyện sinh tồn trong bão.</li>
+      </ul>
+
+      <div class="prompt-box">
+        Hãy đóng vai một nhà phân tích diễn ngôn. Phân tích bài báo sau đây. Hãy xác định:<br/>
+        (1) Sắc thái tình cảm chung của bài viết (tích cực, tiêu cực hay trung tính)?<br/>
+        (2) Những từ khóa hoặc cụm từ nào được nhấn mạnh?<br/>
+        (3) Bài viết đang cố gắng định hình nhận thức của người đọc theo hướng nào?
+      </div>
+    </div>
+
+    <div class="decorative-divider"><span>✦</span></div>
+
+    <!-- Section III: Kết quả AI -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần III</div>
+      <h2>Kết quả phân tích <em>từ AI</em></h2>
+      <div class="divider"></div>
+
+      <div class="compare-grid">
+        
+        <!-- Nhan Dan -->
+        <div class="compare-card nhandan">
+          <h3>📰 Báo Nhân Dân</h3>
+          <div style="margin-bottom: 12px;">
+            Sắc thái: <span class="badge positive">Trung tính - Tích cực</span>
+          </div>
+          <p>Mặc dù ghi nhận thiên tai khốc liệt, bài viết tập trung nhiều vào các nỗ lực, quyết sách chỉ đạo nóng và sự huy động tổng lực của cả hệ thống chính trị để ứng phó.</p>
+          
+          <h4 style="font-size: 14px; margin-top: 16px; color: var(--deep)">🔑 Từ khóa nhấn mạnh:</h4>
+          <p style="font-family: var(--font-serif); font-style: italic; font-size:13.5px; color: var(--rose);">
+            "Chủ động ứng phó", "khắc phục hậu quả", "chỉ đạo kịp thời", "huy động lực lượng", "hỗ trợ nhân dân", "bảo đảm an toàn".
+          </p>
+
+          <h4 style="font-size: 14px; margin-top: 16px; color: var(--deep)">🎯 Định hướng nhận thức:</h4>
+          <p>Hướng người đọc tin tưởng vào sự dẫn dắt, bảo vệ và năng lực quản lý điều phối của các cơ quan chính quyền trước thiên tai; đồng thời khơi dậy tinh thần tương thân tương ái.</p>
+        </div>
+
+        <!-- VnExpress -->
+        <div class="compare-card vnexpress">
+          <h3>📰 VnExpress</h3>
+          <div style="margin-bottom: 12px;">
+            Sắc thái: <span class="badge negative">Trung tính - Tiêu cực</span>
+          </div>
+          <p>Bài viết phản ánh chân thực độ khốc liệt của bão, tập trung mô tả chi tiết các con số thiệt hại nhân mạng, hạ tầng sập đổ và khó khăn bủa vây người dân vùng bão.</p>
+          
+          <h4 style="font-size: 14px; margin-top: 16px; color: var(--deep)">🔑 Từ khóa nhấn mạnh:</h4>
+          <p style="font-family: var(--font-serif); font-style: italic; font-size:13.5px; color: var(--gold);">
+            "Thiệt hại nặng nề", "nhà tốc mái", "sạt lở đất", "ngập lụt lịch sử", "người dân sơ tán", "mất điện diện rộng".
+          </p>
+
+          <h4 style="font-size: 14px; margin-top: 16px; color: var(--deep)">🎯 Định hướng nhận thức:</h4>
+          <p>Hướng người đọc đến sự cảm thông sâu sắc với khó khăn của người dân vùng lũ; nâng cao ý thức cảnh giác trước sự nguy hiểm tột độ của thiên tai và sự cấp bách cần cứu trợ khẩn cấp.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="decorative-divider"><span>✦</span></div>
+
+    <!-- Section IV: So sánh -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần IV</div>
+      <h2>Bảng đối chiếu <em>diễn ngôn</em></h2>
+      <div class="divider"></div>
+
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Tiêu chí so sánh</th>
+            <th>Báo Nhân Dân</th>
+            <th>VnExpress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sắc thái tình cảm</strong></td>
+            <td>Trung tính nghiêng về Tích cực</td>
+            <td>Trung tính nghiêng về Tiêu cực</td>
+          </tr>
+          <tr>
+            <td><strong>Trọng tâm thông tin</strong></td>
+            <td>Quyết sách, công tác chỉ đạo & nỗ lực ứng phó của chính quyền</td>
+            <td>Hậu quả thực tế, thiệt hại cụ thể và câu chuyện của người dân</td>
+          </tr>
+          <tr>
+            <td><strong>Lựa chọn từ ngữ nổi bật</strong></td>
+            <td>Chỉ đạo, huy động, ứng phó, hỗ trợ, tinh thần đoàn kết</td>
+            <td>Tàn phá, sập đổ, cô lập, sạt lở, khó khăn, sơ tán</td>
+          </tr>
+          <tr>
+            <td><strong>Mục đích truyền thông</strong></td>
+            <td>Xây dựng niềm tin đồng lòng vượt khó của nhân dân vào chính quyền</td>
+            <td>Mô tả tính khốc liệt của thiên tai, thúc giục tinh thần cứu trợ xã hội</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="decorative-divider"><span>✦</span></div>
+
+    <!-- Section V: Những điều AI giúp nhận ra -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần V</div>
+      <h2>Phát hiện giá trị <em>từ AI</em></h2>
+      <div class="divider"></div>
+      <p>Thông qua quá trình đối sánh tự động bằng trí tuệ nhân tạo, tôi rút ra 4 nhận thức quan trọng:</p>
+      <ol style="margin-left: 20px; line-height: 2;">
+        <li><strong>Một sự kiện, nhiều lăng kính:</strong> Các cơ quan báo chí có thể lựa chọn những chi tiết và hình ảnh hoàn toàn khác biệt để làm nổi bật thông điệp mà họ muốn định hướng.</li>
+        <li><strong>Sức mạnh của từ ngữ:</strong> Việc chọn lọc tính từ, động từ có sắc thái biểu cảm mạnh tác động sâu sắc đến trạng thái tâm lý và cảm xúc của độc giả.</li>
+        <li><strong>AI là trợ thủ phân tích tốc độ:</strong> AI giúp bóc tách từ khóa, nhận diện nhanh sắc thái (Sentiment Analysis) trong vài giây mà không bị chi phối bởi định kiến cá nhân.</li>
+        <li><strong>Vai trò quyết định của con người:</strong> Phản hồi của AI chỉ mang tính tham khảo sơ bộ. Người nghiên cứu vẫn cần đọc sâu bối cảnh lịch sử và sử dụng tư duy phản biện để có nhận định khách quan cuối cùng.</li>
+      </ol>
+    </div>
+
+    <div class="decorative-divider"><span>✦</span></div>
+
+    <!-- Section VI: Đánh giá -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần VI</div>
+      <h2>Đánh giá việc <em>sử dụng AI</em></h2>
+      <div class="divider"></div>
+
+      <div class="eval-grid">
+        <div class="eval-box pros">
+          <h5>✅ Ưu điểm</h5>
+          <ul>
+            <li>Tốc độ phân tích cực nhanh đối với khối lượng văn bản khổng lồ.</li>
+            <li>Tự động thống kê tần suất xuất hiện và gom nhóm các từ khóa.</li>
+            <li>Xác định sắc thái cảm xúc khách quan dựa trên tập dữ liệu lớn.</li>
+            <li>Hỗ trợ trực quan hóa so sánh đa chiều.</li>
+          </ul>
+        </div>
+        <div class="eval-box cons">
+          <h5>⚠️ Hạn chế</h5>
+          <ul>
+            <li>Có thể bỏ sót hoặc hiểu sai các ẩn dụ văn học phức tạp hoặc từ ngữ mỉa mai.</li>
+            <li>Kết quả phụ thuộc nặng nề vào chất lượng thiết lập prompt.</li>
+            <li>Thiếu khả năng thấu hiểu sâu bối cảnh lịch sử, văn hóa xã hội thực tế.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="decorative-divider"><span>✦</span></div>
+
+    <!-- Section VII: Kết luận -->
+    <div class="content-section reveal">
+      <div class="section-number">Phần VII</div>
+      <h2>Kết <em>luận</em></h2>
+      <div class="divider"></div>
+      <blockquote>
+        Báo chí không chỉ là tấm gương phản ánh đời sống, mà còn là công cụ định hình nhận thức xã hội qua nghệ thuật ngôn từ. Việc kết hợp AI trong phân tích diễn ngôn giúp chúng ta tiếp cận thông tin một cách thông thái, khoa học và tránh được các định kiến truyền thông một chiều.
+      </blockquote>
+    </div>
+
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <span>© 2026 — All rights reserved</span>
+    <span class="footer-name">Nguyễn Khánh Linh</span>
+    <span>HSB · ĐHQGHN</span>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .nav-back, .compare-card, .eval-box').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        ring.style.width = '56px';
+        ring.style.height = '56px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '12px';
+        cursor.style.height = '12px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, (entry.target.dataset.delay || 0));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.dataset.delay = (i % 5) * 80;
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
