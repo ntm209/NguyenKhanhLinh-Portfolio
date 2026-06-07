@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bài tập 7 — Phân Tích Diễn Ngôn Và Tình Cảm Bằng AI | Nguyễn Khánh Linh</title>
   <meta name="description" content="Báo cáo phân tích diễn ngôn và sắc thái tình cảm trong tin tức bằng công cụ AI về cơn bão Yagi 2024 — Nguyễn Khánh Linh"/>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet"/>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -244,6 +244,7 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 80px 24px 100px;
+      text-align: center;
     }
     .content-section {
       margin-bottom: 60px;
@@ -274,7 +275,7 @@
       width: 50px;
       height: 2px;
       background: var(--gradient-cyan-indigo);
-      margin: 16px 0 24px;
+      margin: 16px auto 24px;
     }
     .content-body {
       font-size: 15px;
@@ -289,7 +290,7 @@
       font-weight: 600;
     }
     .content-blockquote {
-      font-family: var(--font-mono);
+      font-family: var(--font-sans);
       font-size: 17px;
       font-style: italic;
       color: var(--accent-indigo);
@@ -369,6 +370,7 @@
     .step-header {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 14px;
       margin-bottom: 14px;
     }
@@ -706,7 +708,8 @@
     }
     .eval-card-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: center;
       gap: 14px;
       margin-bottom: 14px;
     }
@@ -905,6 +908,7 @@
     .tool-header {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 16px;
       margin-bottom: 20px;
     }
@@ -941,7 +945,6 @@
       font-family: var(--font-mono);
       font-size: 14px;
       line-height: 1.8;
-      font-style: italic;
       padding: 20px 24px;
       border-radius: 4px;
       margin: 20px 0;
@@ -994,7 +997,6 @@
       font-family: var(--font-mono);
       font-size: 14.5px;
       line-height: 1.8;
-      font-style: italic;
       color: #38BDF8;
       margin-bottom: 12px;
       background: #0F172A;
@@ -1173,7 +1175,15 @@
       .step-card { padding: 24px 20px; }
       .step-number { font-size: 36px; }
     }
-  </style>
+
+      .content-wrap ul, .content-wrap ol {
+        display: inline-block;
+        text-align: left;
+      }
+      .ref-table, .styled-table {
+        text-align: left;
+      }
+    </style>
 
 
 
@@ -1203,7 +1213,7 @@
   </section>
 
   <!-- ─── CONTENT ─── -->
-  <div class="content">
+  <div class="content-wrap">
 
     <!-- Section I: Mục tiêu -->
     <div class="content-section reveal">
